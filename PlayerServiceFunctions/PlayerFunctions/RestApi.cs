@@ -10,6 +10,7 @@ namespace PlayerFunctions;
 public class RestApi
 {
   private static List<Player> _players = [];
+  private IStorageConnector _storageConnector = new InMemoryStorage();
 
   [Function("AddPlayer")]
   public IActionResult AddPlayer([HttpTrigger(AuthorizationLevel.Anonymous, "put", 
@@ -25,6 +26,7 @@ public class RestApi
 
     // Add player to storage
     _players.Add(player);
+    _storageConnector.Add(player);
     return new OkObjectResult(string.Empty);
   }
 
@@ -33,7 +35,8 @@ public class RestApi
     Route = "v1/players/{id}")] HttpRequest req, string id)
   {    
     // Find player in storage
-    Player player = _players.Find(p => p.Id == id);
+    //Player player = _players.Find(p => p.Id == id);
+    Player player = _storageConnector.GetById(id);
 
     // When player wasn't found
     if (player == null)
@@ -51,15 +54,16 @@ public class RestApi
     if (!VerifyPositionFormat(position))
       return new BadRequestObjectResult(string.Empty);
 
-    IEnumerable<PositionPlayer> playersAtPosition = 
-      _players.Where(p => p.Position == position)
-              .Select(x => new PositionPlayer() { Id = x.Id, Name = x.Name });
+    IEnumerable<PositionPlayer> playersAtPosition = _storageConnector.GetByPosition(position);
+      //_players.Where(p => p.Position == position)
+      //        .Select(x => new PositionPlayer() { Id = x.Id, Name = x.Name });
 
-    JsonObject jso = new JsonObject();
-    string list = JsonConvert.SerializeObject(playersAtPosition);
-    jso.Add("players", list);
 
-    return new OkObjectResult(jso);
+    JsonObject jsonObject = new JsonObject();
+    string players = JsonConvert.SerializeObject(playersAtPosition);
+    jsonObject.Add("players", players);
+
+    return new OkObjectResult(jsonObject);
   }
 
   private bool VerifyPositionFormat(string position)
