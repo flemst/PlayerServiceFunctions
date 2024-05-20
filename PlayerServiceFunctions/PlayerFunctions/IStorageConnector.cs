@@ -10,6 +10,6 @@ namespace PlayerFunctions
   {
     void Add(Player player);
     Player GetById(string id);
-    IEnumerable<Player> GetByPosition();
+    IEnumerable<PositionPlayer> GetByPosition(string position);
   }
 }
