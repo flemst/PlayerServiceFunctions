@@ -54,9 +54,9 @@ public class Tests
 
     // Assert
     //Assert.IsInstanceOf<OkObjectResult>(result);
-    //var okResult = (OkObjectResult)result;
-    //var playerJsonString = (string)okResult.Value;
-    //var deserializedPlayer = JsonSerializer.Deserialize<Player>(playerJsonString);
+    var okResult = (OkObjectResult)result;
+    var playerJsonString = (string)okResult.Value;
+    var deserializedPlayer = JsonSerializer.Deserialize<Player>(playerJsonString);
     //Assert.AreEqual(existingPlayer.Name, deserializedPlayer.Name);
     //Assert.AreEqual(existingPlayer.Id, deserializedPlayer.Id);
   }

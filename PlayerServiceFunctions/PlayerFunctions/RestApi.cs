@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using System.Net.Mime;
+using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -55,8 +56,26 @@ public class RestApi
       return new NotFoundObjectResult(string.Empty);
 
     // Return the player json object
-    string playerJsonString = JsonSerializer.Serialize(player);
-    return new OkObjectResult(playerJsonString);
+    //string playerJsonString = JsonSerializer.Serialize(player);
+
+
+    //var res = new OkObjectResult(playerJsonString);
+    //var jsonResult = new ContentResult
+    //{
+    //  Content = JsonSerializer.Serialize(player),
+    //  ContentType = MediaTypeNames.Application.Json,
+    //  StatusCode = StatusCodes.Status200OK
+    //};
+
+    //return jsonResult;
+    //return new OkObjectResult(playerJsonString);
+
+    return new ContentResult
+    {
+      Content = JsonSerializer.Serialize(player),
+      ContentType = MediaTypeNames.Application.Json,
+      StatusCode = StatusCodes.Status200OK
+    };
   }
 
   [Function("GetPlayersByPosition")]
@@ -67,13 +86,9 @@ public class RestApi
     if (!VerifyPositionFormat(position))
       return new BadRequestObjectResult(string.Empty);
 
-
-
     JsonArray arr = new JsonArray();
 
-
     IEnumerable<PositionPlayer> playersAtPosition = _storage.GetByPosition(position);
-
 
     foreach (PositionPlayer player in playersAtPosition)
     {
@@ -90,7 +105,14 @@ public class RestApi
       { "players", arr }
     };
 
-    return new OkObjectResult(jsonObj);
+    //return new OkObjectResult(jsonObj);
+    
+    return new ContentResult
+    {
+      Content = jsonObj.ToJsonString(),
+      ContentType = MediaTypeNames.Application.Json,
+      StatusCode = StatusCodes.Status200OK
+    };
   }
 
   private bool VerifyPositionFormat(string position)
