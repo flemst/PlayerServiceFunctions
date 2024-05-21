@@ -1,24 +1,25 @@
-﻿using Newtonsoft.Json;
+﻿//using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace PlayerFunctions;
 
 public class Player
 {
-  [JsonProperty("playerId")]
+  [JsonPropertyName("playerID")]
   public string Id { get; set; }
 
-  [JsonProperty("playerName")]
+  [JsonPropertyName("playerName")]
   public string Name { get; set; }
 
-  [JsonProperty("groupName")]
+  [JsonPropertyName("groupName")]
   public string Group { get; set; }
 
-  [JsonProperty("region")]
+  [JsonPropertyName("region")]
   public string Region { get; set; }
 
-  [JsonProperty("positionAsString")]
+  [JsonPropertyName("positionAsString")]
   public string Position { get; set; }
 
-  [JsonProperty("accessToken")]
+  [JsonPropertyName("accessToken")]
   public string AccessToken { get; set; }
 }

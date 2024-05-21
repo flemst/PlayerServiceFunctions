@@ -2,10 +2,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Net.Mime;
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
+
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PlayerFunctions;
@@ -28,7 +29,9 @@ public class RestApi
   {
     // Read player object from request
     string body = await new StreamReader(req.Body).ReadToEndAsync();
-    Player player = JsonConvert.DeserializeObject<Player>(body);
+    _logger.LogInformation($"Body: {body}");
+    //Player player = JsonConvert.DeserializeObject<Player>(body);
+    Player player = JsonSerializer.Deserialize<Player>(body);
 
     // Validate player object
     if (player == null)
@@ -41,7 +44,7 @@ public class RestApi
 
     var res = new OkObjectResult(player);
 
-    return new OkObjectResult(string.Empty);
+    return new OkObjectResult(player);
   }
 
   [Function("GetPlayerById")]
@@ -57,7 +60,7 @@ public class RestApi
       return new NotFoundObjectResult(string.Empty);
 
     // Return the player json object
-    string playerJsonString = JsonConvert.SerializeObject(player);
+    string playerJsonString = JsonSerializer.Serialize(player);
     return new OkObjectResult(playerJsonString);
   }
 
@@ -71,7 +74,7 @@ public class RestApi
 
 
 
-    JArray arr = new JArray();
+    JsonArray arr = new JsonArray();
 
 
     IEnumerable<PositionPlayer> playersAtPosition = _storage.GetByPosition(position);
@@ -79,13 +82,13 @@ public class RestApi
 
     foreach (PositionPlayer player in playersAtPosition)
     {
-      JObject jo = new JObject();
+      JsonObject jo = new JsonObject();
       jo.Add("playerId", player.Id);
       jo.Add("playerName", player.Name);
       arr.Add(jo);
     }
 
-    JObject jsonObj = new JObject();
+    JsonObject jsonObj = new JsonObject();
 
     jsonObj.Add("players", arr);
 
@@ -96,7 +99,7 @@ public class RestApi
     //string players = JsonConvert.SerializeObject(playersAtPosition);
     //jsonObject.Add("players", players);
 
-    return new OkObjectResult(jsonObj.ToString());
+    return new OkObjectResult(jsonObj);
   }
 
   private bool VerifyPositionFormat(string position)

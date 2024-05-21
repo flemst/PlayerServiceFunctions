@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PlayerFunctions
 {
-  internal interface IStorageConnector
+  public interface IStorageConnector
   {
     void Add(Player player);
     Player GetById(string id);
