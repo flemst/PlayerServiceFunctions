@@ -1,12 +1,13 @@
 ﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace PlayerFunctions;
 
 public class PositionPlayer
 {
-  [JsonProperty("playerId")]
+  [JsonPropertyName("playerID")]
   public string Id { get; set; }
 
-  [JsonProperty("playerName")]
+  [JsonPropertyName("playerName")]
   public string Name { get; set; }
 }

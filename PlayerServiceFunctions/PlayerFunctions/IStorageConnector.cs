@@ -8,7 +8,7 @@ namespace PlayerFunctions
 {
   public interface IStorageConnector
   {
-    void Add(Player player);
+    void AddOrUpdate(Player player);
     Player GetById(string id);
     IEnumerable<PositionPlayer> GetByPosition(string position);
   }

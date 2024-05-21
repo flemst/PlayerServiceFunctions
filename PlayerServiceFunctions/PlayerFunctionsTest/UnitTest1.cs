@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using PlayerFunctions;
-using System.Numerics;
 using System.Text;
 using System.Text.Json;
 
@@ -21,47 +20,46 @@ public class Tests
   {
     _storageMock = Substitute.For<IStorageConnector>();
     _loggerMock = Substitute.For<ILogger<RestApi>>();
-    _restApi = new RestApi(_loggerMock);
-    //_restApi.SetStorageConnector(_storageMock);
+    _restApi = new RestApi(_loggerMock, _storageMock);
   }
 
   [Test]
-  public async Task AddPlayer_WithValidPlayer_ReturnsOkObjectResult()
+  public async Task AddPlayer_WithValidJsonBody_ReturnsOkObjectResult()
   {
     // Arrange
-    var playerName = "TestPlayer";
-    var playerId = "user-001";
+    string playerName = "TestPlayer";
+    string playerId = "user-001";
     Player player = new Player { Name = playerName, Id = playerId };
     string jsonPlayer = JsonSerializer.Serialize(player);
-    var request = new DefaultHttpContext().Request;
+    HttpRequest request = new DefaultHttpContext().Request;
     request.Body = new MemoryStream(Encoding.UTF8.GetBytes(jsonPlayer));
 
     // Act
     var result = await _restApi.AddPlayer(request);
 
     // Assert
-    var okResult = result as OkObjectResult;
-    okResult.Should().NotBeNull();
+    result.GetType().Should().Be(typeof(OkObjectResult));
   }
-  //  [Test]
-  //  public async Task GetPlayerById_WithExistingPlayer_ReturnsOkObjectResult()
-  //  {
-  //    // Arrange
-  //    var playerId = "testId";
-  //    var existingPlayer = new Player { Name = "TestPlayer", Id = playerId };
-  //    _storageMock.GetById(playerId).Returns(existingPlayer);
 
-  //    // Act
-  //    var result = _restApi.GetPlayerById(null, playerId);
+  [Test]
+  public async Task GetPlayerById_WithExistingPlayerId_ReturnsOkObjectResult()
+  {
+    // Arrange
+    var playerId = "testId";
+    var existingPlayer = new Player { Name = "TestPlayer", Id = playerId };
+    _storageMock.GetById(playerId).Returns(existingPlayer);
 
-  //    // Assert
-  //    Assert.IsInstanceOf<OkObjectResult>(result);
-  //    var okResult = (OkObjectResult)result;
-  //    var playerJsonString = (string)okResult.Value;
-  //    var deserializedPlayer = JsonSerializer.Deserialize<Player>(playerJsonString);
-  //    Assert.AreEqual(existingPlayer.Name, deserializedPlayer.Name);
-  //    Assert.AreEqual(existingPlayer.Id, deserializedPlayer.Id);
-  //  }
+    // Act
+    var result = _restApi.GetPlayerById(null, playerId);
+
+    // Assert
+    //Assert.IsInstanceOf<OkObjectResult>(result);
+    //var okResult = (OkObjectResult)result;
+    //var playerJsonString = (string)okResult.Value;
+    //var deserializedPlayer = JsonSerializer.Deserialize<Player>(playerJsonString);
+    //Assert.AreEqual(existingPlayer.Name, deserializedPlayer.Name);
+    //Assert.AreEqual(existingPlayer.Id, deserializedPlayer.Id);
+  }
 
   //  [Test]
   //  public void GetPlayerById_WithNonExistingPlayer_ReturnsNotFoundObjectResult()
