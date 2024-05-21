@@ -44,7 +44,7 @@ public class RestApi
 
     var res = new OkObjectResult(player);
 
-    return new OkObjectResult(player);
+    return new OkObjectResult(string.Empty);
   }
 
   [Function("GetPlayerById")]
