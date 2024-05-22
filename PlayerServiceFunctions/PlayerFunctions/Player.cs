@@ -22,4 +22,13 @@ public class Player
 
   [JsonPropertyName("accessToken")]
   public string AccessToken { get; set; }
+
+  public override string ToString() =>
+    "Player" +
+    "\n Id: " + Id +
+    "\n Name: " + Name +
+    "\n Group: " + Group +
+    "\n Region: " + Region +
+    "\n Position: " + Position +
+    "\n AccessToken: " + AccessToken;
 }
