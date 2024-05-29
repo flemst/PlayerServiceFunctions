@@ -2,26 +2,26 @@
 {
   public class InMemoryStorage : IStorageConnector
   {
-    private static Dictionary<string, Player> _playersDict = new();
+    private static Dictionary<string, Player> _players = new();
 
     public void AddOrUpdate(Player player)
     {
-      if (_playersDict.ContainsKey(player.Id))
-        _playersDict[player.Id] = player;
+      if (_players.ContainsKey(player.Id))
+        _players[player.Id] = player;
       else
-        _playersDict.Add(player.Id, player);
+        _players.Add(player.Id, player);
     }
 
     public Player GetById(string id)
     {
-      if (_playersDict.ContainsKey(id))
-        return _playersDict[id];
+      if (_players.ContainsKey(id))
+        return _players[id];
       return null;
     }
 
     public IEnumerable<Player> GetByPosition(string position)
     {
-      return _playersDict
+      return _players
         .Where(p => p.Value.Position == position)
         .Select(x => x.Value);
     }
