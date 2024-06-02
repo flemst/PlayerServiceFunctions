@@ -20,14 +20,14 @@ namespace PlayerFunctions.EndPoints
 
     [Function("GetPlayerById")]
     public IActionResult GetPlayerById(
-      [HttpTrigger(AuthorizationLevel.Anonymous, "get",
-    Route = "v1/players/{id}")] HttpRequest req, string id)
+      [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/players/{id}")] 
+      HttpRequest req, string id)
     {
       Player player = _storage.GetById(id);
 
       // When player doesn't exist
       if (player == null)
-        return new NotFoundObjectResult(string.Empty);
+        return new NotFoundResult();
 
       _logger.LogInformation($"Found player \n" + player);
 

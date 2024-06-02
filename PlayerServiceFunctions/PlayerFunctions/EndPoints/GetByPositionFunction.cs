@@ -21,7 +21,7 @@ namespace PlayerFunctions.EndPoints
     [Function("GetPlayersByPosition")]
     public IActionResult GetPlayersByPosition(
       [HttpTrigger(AuthorizationLevel.Anonymous, "get",
-    Route = "v1/players/position/{position}")] HttpRequest req, string position)
+      Route = "v1/players/position/{position}")] HttpRequest req, string position)
     {
       if (!ValidatePositionFormat(position))
         return new BadRequestResult();
